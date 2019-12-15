@@ -2,28 +2,21 @@ package com.jplanson.cloze.view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import java.awt.BorderLayout;
-import javax.swing.border.BevelBorder;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Font;
-import javax.swing.border.MatteBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
 import java.awt.CardLayout;
+import net.miginfocom.swing.MigLayout;
 
 public class ClozeGeneratorFrame extends JFrame 
 {
 	private static final long serialVersionUID = 8826062099639243348L;
+	private JTextField textField_1;
 	
 	public ClozeGeneratorFrame()
 	{
@@ -140,6 +133,51 @@ public class ClozeGeneratorFrame extends JFrame
 		JPanel panelCreateCloze = new JPanel();
 		panelCreateCloze.setBackground(Color.WHITE);
 		panelContent.add(panelCreateCloze, "createCloze");
+		panelCreateCloze.setLayout(new MigLayout("", "[40.00][][225.00][150.00][225.00][grow]", "[40.00][][33.00][][43.00]"));
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBorder(null);
+		panelCreateCloze.add(panel, "cell 0 0,grow");
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBorder(null);
+		panelCreateCloze.add(panel_1, "cell 5 0,grow");
+		
+		JLabel lblSampleText = new JLabel("Sample Text:");
+		lblSampleText.setFont(new Font("Consolas", Font.PLAIN, 24));
+		panelCreateCloze.add(lblSampleText, "cell 1 1,alignx trailing");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		panelCreateCloze.add(scrollPane, "cell 2 1 3 2,grow");
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setFont(new Font("Dialog", Font.PLAIN, 24));
+		textArea.setLineWrap(true);
+		scrollPane.setViewportView(textArea);
+		
+		JLabel lblTranslation = new JLabel("Translation:");
+		lblTranslation.setFont(new Font("Consolas", Font.PLAIN, 24));
+		panelCreateCloze.add(lblTranslation, "cell 1 3,alignx trailing");
+		
+		textField_1 = new JTextField();
+		textField_1.setFont(new Font("Dialog", Font.PLAIN, 24));
+		panelCreateCloze.add(textField_1, "cell 2 3 3 1,growx");
+		textField_1.setColumns(10);
+		
+		JButton btnProcess = new JButton("Process");
+		btnProcess.setFont(new Font("Consolas", Font.PLAIN, 24));
+		panelCreateCloze.add(btnProcess, "cell 3 4,grow");
+		btnProcess.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				System.out.println(textArea.getText());
+				textField_1.setText(textArea.getText());
+			}
+		});
 		
 		JPanel panelEditCloze = new JPanel();
 		panelEditCloze.setBackground(Color.GREEN);
