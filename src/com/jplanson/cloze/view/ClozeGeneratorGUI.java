@@ -35,6 +35,9 @@ public class ClozeGeneratorGUI extends JFrame
 	
 	public JPanel panelTest;
 	
+	// Cloze specifier variable
+	public int dragColor = -1;
+	
 	public ClozeGeneratorGUI()
 	{
 		model = new Model();
@@ -175,7 +178,7 @@ public class ClozeGeneratorGUI extends JFrame
 		panelCreateCloze.add(scrollSampleText, "cell 2 1 3 2,grow");
 		
 		inputSampleText = new JTextArea();
-		inputSampleText.setFont(new Font("Dialog", Font.PLAIN, 24));
+		inputSampleText.setFont(new Font("MS Gothic", Font.PLAIN, 24));
 		inputSampleText.setLineWrap(true);
 		scrollSampleText.setViewportView(inputSampleText);
 		
@@ -214,11 +217,11 @@ public class ClozeGeneratorGUI extends JFrame
 		panelSpaceFill3.setBackground(Color.WHITE);
 		panelCreateCloze.add(panelSpaceFill3, "cell 3 7,grow");
 		
-		WrapLayout wp = new WrapLayout(FlowLayout.LEFT, 0, 0);
+		WrapLayout wl = new WrapLayout(FlowLayout.LEFT, 0, 0);
 		panelProcessing = new JPanel();
 		panelProcessing.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panelProcessing.setBackground(Color.WHITE);
-		panelProcessing.setLayout(new FlowLayout());
+		panelProcessing.setLayout(wl);
 		panelCreateCloze.add(panelProcessing, "cell 1 8 5 1,grow");
 		
 		JPanel panelSpaceFill4 = new JPanel();
