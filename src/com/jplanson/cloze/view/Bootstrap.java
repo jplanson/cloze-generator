@@ -4,6 +4,6 @@ public class Bootstrap
 {
 	public static void main(String args[])
 	{
-		ClozeGeneratorFrame frame = new ClozeGeneratorFrame();
+		ClozeGeneratorGUI frame = new ClozeGeneratorGUI();
 	}
 }
