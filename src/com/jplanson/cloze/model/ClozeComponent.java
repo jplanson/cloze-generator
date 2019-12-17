@@ -106,4 +106,9 @@ public class ClozeComponent extends JLabel
 		setForeground(fg);
 		setBackground(bg);
 	}
+	
+	public int getValue()
+	{
+		return val.getValue();
+	}
 }

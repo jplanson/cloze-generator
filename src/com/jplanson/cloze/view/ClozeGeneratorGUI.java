@@ -15,7 +15,11 @@ import java.awt.CardLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.border.LineBorder;
 
+import com.jplanson.cloze.controller.GenerateClozeQuestionsController;
 import com.jplanson.cloze.controller.ProcessClozeInputController;
+import com.jplanson.cloze.controller.UpdateClozeSetListController;
+import com.jplanson.cloze.model.ClozeComponent;
+import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
 
 public class ClozeGeneratorGUI extends JFrame 
@@ -25,6 +29,7 @@ public class ClozeGeneratorGUI extends JFrame
 	Model model;
 	
 	public JPanel panelHome;
+	public JList<ClozeText> listClozeSet;
 	
 	public JPanel panelCreateCloze;
 	public JTextArea inputSampleText;
@@ -152,13 +157,43 @@ public class ClozeGeneratorGUI extends JFrame
 		panelSideBar.setLayout(gl_panelSideBar);
 		
 		panelHome = new JPanel();
-		panelHome.setBackground(Color.RED);
+		panelHome.setBackground(Color.WHITE);
 		panelContent.add(panelHome, "home");
+		
+		JLabel lblClozeTextList = new JLabel("Cloze Sets:");
+		lblClozeTextList.setFont(new Font("Consolas", Font.PLAIN, 24));
+		
+		JScrollPane scrollClozeSet = new JScrollPane();
+		scrollClozeSet.setBorder(new LineBorder(new Color(130, 135, 144), 2));
+		GroupLayout gl_panelHome = new GroupLayout(panelHome);
+		gl_panelHome.setHorizontalGroup(
+			gl_panelHome.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelHome.createSequentialGroup()
+					.addGap(59)
+					.addGroup(gl_panelHome.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollClozeSet, GroupLayout.PREFERRED_SIZE, 1108, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblClozeTextList))
+					.addContainerGap(47, Short.MAX_VALUE))
+		);
+		gl_panelHome.setVerticalGroup(
+			gl_panelHome.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelHome.createSequentialGroup()
+					.addGap(65)
+					.addComponent(lblClozeTextList)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollClozeSet, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(57, Short.MAX_VALUE))
+		);
+		
+		listClozeSet = new JList<ClozeText>();
+		listClozeSet.setFont(new Font("MS Gothic", Font.BOLD, 18));
+		scrollClozeSet.setViewportView(listClozeSet);
+		panelHome.setLayout(gl_panelHome);
 		
 		panelCreateCloze = new JPanel();
 		panelCreateCloze.setBackground(Color.WHITE);
 		panelContent.add(panelCreateCloze, "createCloze");
-		panelCreateCloze.setLayout(new MigLayout("", "[122.00][][225.00][150.00][225.00][131.00][grow]", "[40.00][][33.00][][38.00][17.00][43.00][30.00][326.00][23.00][45.00]"));
+		panelCreateCloze.setLayout(new MigLayout("", "[122.00][grow][225.00][150.00][225.00][131.00][grow]", "[40.00][][33.00][][38.00][17.00][43.00][30.00][326.00,grow][23.00][45.00]"));
 		
 		JPanel panelSpaceFill1 = new JPanel();
 		panelSpaceFill1.setBackground(Color.WHITE);
@@ -217,12 +252,14 @@ public class ClozeGeneratorGUI extends JFrame
 		panelSpaceFill3.setBackground(Color.WHITE);
 		panelCreateCloze.add(panelSpaceFill3, "cell 3 7,grow");
 		
-		WrapLayout wl = new WrapLayout(FlowLayout.LEFT, 0, 0);
+		JScrollPane scrollProcessing = new JScrollPane();
+		panelCreateCloze.add(scrollProcessing, "cell 1 8 5 1,grow");
+		
 		panelProcessing = new JPanel();
+		panelProcessing.setBackground(Color.WHITE);		
 		panelProcessing.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panelProcessing.setBackground(Color.WHITE);
-		panelProcessing.setLayout(wl);
-		panelCreateCloze.add(panelProcessing, "cell 1 8 5 1,grow");
+		panelProcessing.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
+		scrollProcessing.setViewportView(panelProcessing);
 		
 		JPanel panelSpaceFill4 = new JPanel();
 		panelSpaceFill4.setBorder(null);
@@ -231,6 +268,20 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		JButton btnGenerate = new JButton("Generate");
 		btnGenerate.setFont(new Font("Consolas", Font.PLAIN, 24));
+		btnGenerate.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				SwingUtilities.invokeLater(new Runnable() {
+	                @Override
+	                public void run() {
+	                	GenerateClozeQuestionsController gcq = new GenerateClozeQuestionsController(model, ClozeGeneratorGUI.this);
+	    				gcq.process();
+	                }
+	            });
+			}
+		});
 		panelCreateCloze.add(btnGenerate, "cell 3 10,grow");
 		
 		// END CREATE CLOZE
@@ -254,6 +305,14 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+				UpdateClozeSetListController ucsl = new UpdateClozeSetListController(model, ClozeGeneratorGUI.this);
+				ucsl.process();
+            }
+        });
+		
 	}
 }
