@@ -43,12 +43,12 @@ public class GenerateClozeQuestionsController
 			int end = -1;
 			
 			// Iterate until a component with a different state is found
-			while (ccState == model.createClozeText.clozeComponents.get(i).getValue())
+			while (i < model.createClozeText.clozeComponents.size() && ccState == model.createClozeText.clozeComponents.get(i).getValue())
 			{
 				i++;
 			}
 			
-			end = i - 1;
+			end = i;
 			
 			ClozeQuestion clozeQuestion = new ClozeQuestion(null, null, start, end);
 			clozeQuestions.add(clozeQuestion);
@@ -72,6 +72,16 @@ public class GenerateClozeQuestionsController
 			e.printStackTrace();
 		}
 		
+		// Clear form after a successful addition
+		gui.inputSampleText.setText("");
+		gui.inputTranslation.setText("");
+		gui.panelProcessing.removeAll();
+		gui.panelProcessing.revalidate();
+		gui.panelProcessing.repaint();
+		gui.pack();
+		model.createClozeText = null;
+		
+		// Refresh home page list
 		UpdateClozeSetListController ucsl = new UpdateClozeSetListController(model, gui);
 		ucsl.process();
 	}

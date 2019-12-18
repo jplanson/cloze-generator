@@ -10,17 +10,24 @@ import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.border.LineBorder;
 
+import com.jplanson.cloze.controller.AnswerQuestionController;
+import com.jplanson.cloze.controller.DeleteClozeSetController;
+import com.jplanson.cloze.controller.DisplayQuestionController;
 import com.jplanson.cloze.controller.GenerateClozeQuestionsController;
 import com.jplanson.cloze.controller.ProcessClozeInputController;
+import com.jplanson.cloze.controller.StartTestController;
 import com.jplanson.cloze.controller.UpdateClozeSetListController;
 import com.jplanson.cloze.model.ClozeComponent;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
+import java.awt.BorderLayout;
 
 public class ClozeGeneratorGUI extends JFrame 
 {
@@ -36,9 +43,12 @@ public class ClozeGeneratorGUI extends JFrame
 	public JTextArea inputTranslation;
 	public JPanel panelProcessing;
 	
-	public JPanel panelEditCloze;
-	
 	public JPanel panelTest;
+	public JLabel lblTestTranslation;
+	public JLabel lblTestQuestion;
+	public JLabel lblTestAnswer;
+	public JButton btnTestAdvance;
+	public JButton btnTestPrevious;
 	
 	// Cloze specifier variable
 	public int dragColor = -1;
@@ -95,20 +105,13 @@ public class ClozeGeneratorGUI extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				inputSampleText.setText("");
+				inputTranslation.setText("");
+				panelProcessing.removeAll();
+				model.createClozeText = null;
+				
 				CardLayout cl = (CardLayout) panelContent.getLayout();
 				cl.show(panelContent, "createCloze");
-			}
-		});
-		
-		JButton btnEditClozeSet = new JButton("Edit Cloze Set");
-		btnEditClozeSet.setFont(new Font("Consolas", Font.PLAIN, 16));
-		btnEditClozeSet.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				CardLayout cl = (CardLayout) panelContent.getLayout();
-				cl.show(panelContent, "editCloze");
 			}
 		});
 		
@@ -119,6 +122,16 @@ public class ClozeGeneratorGUI extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				CardLayout testLayout = (CardLayout) panelContent.getLayout();
+				if (model.testState.started)
+				{
+					testLayout.show(panelContent, "testPerform");
+				}
+				else
+				{
+					testLayout.show(panelContent, "testSelect");
+				}
+				
 				CardLayout cl = (CardLayout) panelContent.getLayout();
 				cl.show(panelContent, "test");
 			}
@@ -135,7 +148,6 @@ public class ClozeGeneratorGUI extends JFrame
 						.addComponent(panelLogo, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
 						.addComponent(btnHome, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
 						.addComponent(btnCreateClozeSet, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-						.addComponent(btnEditClozeSet, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
 						.addComponent(btnTest, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
 					.addContainerGap())
 		);
@@ -149,10 +161,8 @@ public class ClozeGeneratorGUI extends JFrame
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnCreateClozeSet, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnEditClozeSet, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnTest, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(388, Short.MAX_VALUE))
+					.addContainerGap(437, Short.MAX_VALUE))
 		);
 		panelSideBar.setLayout(gl_panelSideBar);
 		
@@ -187,6 +197,56 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		listClozeSet = new JList<ClozeText>();
 		listClozeSet.setFont(new Font("MS Gothic", Font.BOLD, 18));
+		listClozeSet.addMouseListener(new MouseListener()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				if (SwingUtilities.isRightMouseButton(e))
+				{
+					if (listClozeSet.getSelectedIndex() == -1) { return; }
+					JPopupMenu menuRightClick = new JPopupMenu();
+					JMenuItem edit = new JMenuItem("Edit");
+					edit.addActionListener(new ActionListener() 
+					{
+						@Override
+						public void actionPerformed(ActionEvent arg0) 
+						{
+							System.out.println(listClozeSet.getSelectedIndex());
+						}
+					});
+					JMenuItem delete = new JMenuItem("Delete");
+					delete.addActionListener(new ActionListener() 
+					{
+						@Override
+						public void actionPerformed(ActionEvent arg0) 
+						{
+							System.out.println(listClozeSet.getSelectedIndex());
+							DeleteClozeSetController dcs = new DeleteClozeSetController(model, ClozeGeneratorGUI.this);
+							dcs.process(listClozeSet.getSelectedIndex());
+						}
+					});
+					
+					menuRightClick.add(edit);
+					menuRightClick.add(delete);
+//					menuRightClick.show(ClozeGeneratorGUI.this, listClozeSet.getX() + e.getX(), listClozeSet.getY() + e.getY());
+					menuRightClick.show(e.getComponent(), e.getX(), e.getY());
+
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {}
+		});
 		scrollClozeSet.setViewportView(listClozeSet);
 		panelHome.setLayout(gl_panelHome);
 		
@@ -284,21 +344,165 @@ public class ClozeGeneratorGUI extends JFrame
 		});
 		panelCreateCloze.add(btnGenerate, "cell 3 10,grow");
 		
-		// END CREATE CLOZE
-		
-		// START EDIT CLOZE
-		
-		panelEditCloze = new JPanel();
-		panelEditCloze.setBackground(Color.GREEN);
-		panelContent.add(panelEditCloze, "editCloze");
-		
 		// END EDIT CLOZE
 		
 		// START TEST
 		
 		panelTest = new JPanel();
-		panelTest.setBackground(Color.CYAN);
+		panelTest.setBackground(Color.WHITE);
 		panelContent.add(panelTest, "test");
+		panelTest.setLayout(new CardLayout(0, 0));
+		
+		JPanel panelTestSelect = new JPanel();
+		panelTestSelect.setBackground(Color.WHITE);
+		panelTest.add(panelTestSelect, "testSelect");
+		
+		JButton btnStartTest = new JButton("Start");
+		btnStartTest.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run() 
+					{
+						StartTestController st = new StartTestController(model, ClozeGeneratorGUI.this);
+						st.process();
+					}
+				});
+			}	
+		});
+		GroupLayout gl_panelTestSelect = new GroupLayout(panelTestSelect);
+		gl_panelTestSelect.setHorizontalGroup(
+			gl_panelTestSelect.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelTestSelect.createSequentialGroup()
+					.addGap(484)
+					.addComponent(btnStartTest, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(613, Short.MAX_VALUE))
+		);
+		gl_panelTestSelect.setVerticalGroup(
+			gl_panelTestSelect.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_panelTestSelect.createSequentialGroup()
+					.addContainerGap(658, Short.MAX_VALUE)
+					.addComponent(btnStartTest, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
+					.addGap(66))
+		);
+		panelTestSelect.setLayout(gl_panelTestSelect);
+		
+		JPanel panelTestPerform = new JPanel();
+		panelTestPerform.setBackground(Color.WHITE);
+		panelTest.add(panelTestPerform, "testPerform");
+		panelTestPerform.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panelTestContent = new JPanel();
+		panelTestContent.setBackground(Color.WHITE);
+		panelTestPerform.add(panelTestContent, BorderLayout.CENTER);
+		
+		JScrollPane scrollTestQuestion = new JScrollPane();
+		
+		JScrollPane scrollTestTranslation = new JScrollPane();
+		
+		JSeparator separatorTest = new JSeparator();
+		
+		JScrollPane scrollTestAnswer = new JScrollPane();
+		scrollTestAnswer.setBackground(Color.WHITE);
+		GroupLayout gl_panelTestContent = new GroupLayout(panelTestContent);
+		gl_panelTestContent.setHorizontalGroup(
+			gl_panelTestContent.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelTestContent.createSequentialGroup()
+					.addGap(42)
+					.addComponent(separatorTest, GroupLayout.PREFERRED_SIZE, 1128, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(44, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, gl_panelTestContent.createSequentialGroup()
+					.addContainerGap(315, Short.MAX_VALUE)
+					.addComponent(scrollTestAnswer, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE)
+					.addGap(299))
+				.addGroup(Alignment.TRAILING, gl_panelTestContent.createSequentialGroup()
+					.addGap(312)
+					.addGroup(gl_panelTestContent.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollTestQuestion, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+						.addComponent(scrollTestTranslation, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE))
+					.addGap(302))
+		);
+		gl_panelTestContent.setVerticalGroup(
+			gl_panelTestContent.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelTestContent.createSequentialGroup()
+					.addGap(68)
+					.addComponent(scrollTestQuestion, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
+					.addGap(27)
+					.addComponent(scrollTestTranslation, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
+					.addGap(35)
+					.addComponent(separatorTest, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)
+					.addGap(35)
+					.addComponent(scrollTestAnswer, GroupLayout.PREFERRED_SIZE, 167, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(47, Short.MAX_VALUE))
+		);
+		
+		lblTestTranslation = new JLabel("");
+		lblTestTranslation.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		scrollTestTranslation.setViewportView(lblTestTranslation);
+		
+		lblTestQuestion = new JLabel("");
+		lblTestQuestion.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		scrollTestQuestion.setViewportView(lblTestQuestion);
+		
+		lblTestAnswer = new JLabel("");
+		lblTestAnswer.setBackground(Color.WHITE);
+		lblTestAnswer.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		scrollTestAnswer.setViewportView(lblTestAnswer);
+		panelTestContent.setLayout(gl_panelTestContent);
+		
+		JPanel panelTestButtons = new JPanel();
+		panelTestPerform.add(panelTestButtons, BorderLayout.SOUTH);
+		panelTestButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		btnTestPrevious = new JButton("Previous");
+		btnTestPrevious.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				SwingUtilities.invokeLater(new Runnable() 
+				{
+					@Override
+					public void run() 
+					{
+						DisplayQuestionController dq = new DisplayQuestionController(model, ClozeGeneratorGUI.this);
+						dq.process(false);
+					}
+				});
+			}
+		});
+		panelTestButtons.add(btnTestPrevious);
+		
+		btnTestAdvance = new JButton("Answer");
+		btnTestAdvance.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				SwingUtilities.invokeLater(new Runnable() 
+				{
+					@Override
+					public void run() 
+					{
+						if (btnTestAdvance.getText() == "Answer")
+						{
+							AnswerQuestionController aq = new AnswerQuestionController(model, ClozeGeneratorGUI.this);
+							aq.process();
+						}
+						else 
+						{
+							DisplayQuestionController dq = new DisplayQuestionController(model, ClozeGeneratorGUI.this);
+							dq.process(true);
+						}
+					}
+				});
+			}
+		});
+		panelTestButtons.add(btnTestAdvance);
 		getContentPane().setLayout(groupLayout);
 		
 		// END TEST

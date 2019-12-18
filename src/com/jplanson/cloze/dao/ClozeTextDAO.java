@@ -49,6 +49,29 @@ public class ClozeTextDAO
 		}
 	}
 	
+	public ClozeText getById(Integer id) throws Exception
+	{
+		ClozeText clozeText = null;
+		
+		try
+		{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM clozeTexts WHERE id = ?;");
+			ps.setInt(1, id);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				clozeText = generateClozeText(resultSet);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Failed to retrieve cloze text: " + e.getMessage());
+		}
+		
+		return clozeText;
+	}
+	
 	public List<ClozeText> getAllClozeTexts() throws Exception
 	{
 		List<ClozeText> allClozeTexts = new ArrayList<ClozeText>();
@@ -78,5 +101,17 @@ public class ClozeTextDAO
 		String translation = resultSet.getString("translation");
 		
 		return new ClozeText(id, sampleText, translation);
+	}
+
+	public void deleteClozeText(Integer id) throws Exception
+	{	
+		// Delete all related ClozeQuestions
+		new ClozeQuestionDAO().deleteByTextId(id);
+		
+		// Delete the cloze text itself
+		Connection conn = DatabaseUtil.connect();
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM clozeTexts WHERE id = ?");
+		ps.setInt(1, id);
+		ps.executeUpdate();
 	}
 }

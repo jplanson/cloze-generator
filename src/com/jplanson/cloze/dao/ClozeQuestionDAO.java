@@ -82,4 +82,20 @@ public class ClozeQuestionDAO
 		
 		return new ClozeQuestion(id, clozeTextId, start, end);
 	}
+	
+	public void deleteByTextId(Integer id) throws Exception
+	{
+		Connection conn = DatabaseUtil.connect();
+		
+		try
+		{
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM clozeQuestions WHERE clozeTextId = ?;");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		}
+		catch (SQLException se)
+		{
+			throw new Exception("Unable to delete cloze questions: " + se.getMessage());
+		}
+	}
 }
