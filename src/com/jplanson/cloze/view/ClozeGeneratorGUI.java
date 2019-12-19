@@ -9,6 +9,8 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,10 +26,10 @@ import com.jplanson.cloze.controller.GenerateClozeQuestionsController;
 import com.jplanson.cloze.controller.ProcessClozeInputController;
 import com.jplanson.cloze.controller.StartTestController;
 import com.jplanson.cloze.controller.UpdateClozeSetListController;
-import com.jplanson.cloze.model.ClozeComponent;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 public class ClozeGeneratorGUI extends JFrame 
 {
@@ -49,6 +51,10 @@ public class ClozeGeneratorGUI extends JFrame
 	public JLabel lblTestAnswer;
 	public JButton btnTestAdvance;
 	public JButton btnTestPrevious;
+	
+	private Image sideDefault = new ImageIcon("res/default_side.png").getImage();
+	private Image sideHover = new ImageIcon("res/rollover_side.png").getImage();
+	private Image sideSelect = new ImageIcon("res/clicked_side.png").getImage();
 	
 	// Cloze specifier variable
 	public int dragColor = -1;
@@ -77,15 +83,24 @@ public class ClozeGeneratorGUI extends JFrame
 		);
 		
 		JPanel panelSideBar = new JPanel();
-		panelSideBar.setBackground(Color.DARK_GRAY);
+		panelSideBar.setBackground(new Color(0x404040));
 		splitPane.setLeftComponent(panelSideBar);
 		
 		JPanel panelContent = new JPanel();
 		splitPane.setRightComponent(panelContent);
 		panelContent.setLayout(new CardLayout(0, 0));
 		
+		// HOME BUTTON
 		JButton btnHome = new JButton("Home");
+		// Text
+		btnHome.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnHome.setForeground(Color.WHITE);
 		btnHome.setFont(new Font("Consolas", Font.PLAIN, 16));
+		// Icon
+		btnHome.setRolloverEnabled(true);
+		btnHome.setMargin(new Insets(0, 0, 0, 0));
+		btnHome.setBorder(null);
+		// Action
 		btnHome.addActionListener(new ActionListener()
 		{
 			@Override
@@ -98,8 +113,17 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		// START CREATE CLOZE 
 		
-		JButton btnCreateClozeSet = new JButton("Create Cloze Set");
+		// NEW CLOZE SET BUTTON
+		JButton btnCreateClozeSet = new JButton("  Create Cloze Set  ");
+		// Text
+		btnCreateClozeSet.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnCreateClozeSet.setForeground(Color.WHITE);
 		btnCreateClozeSet.setFont(new Font("Consolas", Font.PLAIN, 16));
+		// Icon
+		btnCreateClozeSet.setRolloverEnabled(true);
+		btnCreateClozeSet.setMargin(new Insets(0, 0, 0, 0));
+		btnCreateClozeSet.setBorder(null);
+		// Action
 		btnCreateClozeSet.addActionListener(new ActionListener()
 		{
 			@Override
@@ -116,7 +140,15 @@ public class ClozeGeneratorGUI extends JFrame
 		});
 		
 		JButton btnTest = new JButton("Test");
+		// Text
+		btnTest.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnTest.setForeground(Color.WHITE);
 		btnTest.setFont(new Font("Consolas", Font.PLAIN, 16));
+		// Icon
+		btnTest.setRolloverEnabled(true);
+		btnTest.setMargin(new Insets(0, 0, 0, 0));
+		btnTest.setBorder(null);
+		// Action
 		btnTest.addActionListener(new ActionListener()
 		{
 			@Override
@@ -137,7 +169,7 @@ public class ClozeGeneratorGUI extends JFrame
 			}
 		});
 		
-		JPanel panelLogo = new JPanel();
+		ImagePanel panelLogo = new ImagePanel("res/cloze_gen_logo.png");
 		
 		GroupLayout gl_panelSideBar = new GroupLayout(panelSideBar);
 		gl_panelSideBar.setHorizontalGroup(
@@ -401,12 +433,16 @@ public class ClozeGeneratorGUI extends JFrame
 		panelTestPerform.add(panelTestContent, BorderLayout.CENTER);
 		
 		JScrollPane scrollTestQuestion = new JScrollPane();
+		scrollTestQuestion.setBorder(null);
+		scrollTestQuestion.setBackground(Color.WHITE);
 		
 		JScrollPane scrollTestTranslation = new JScrollPane();
+		scrollTestTranslation.setBorder(null);
 		
 		JSeparator separatorTest = new JSeparator();
 		
 		JScrollPane scrollTestAnswer = new JScrollPane();
+		scrollTestAnswer.setBorder(null);
 		scrollTestAnswer.setBackground(Color.WHITE);
 		GroupLayout gl_panelTestContent = new GroupLayout(panelTestContent);
 		gl_panelTestContent.setHorizontalGroup(
@@ -441,16 +477,33 @@ public class ClozeGeneratorGUI extends JFrame
 		);
 		
 		lblTestTranslation = new JLabel("");
-		lblTestTranslation.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		lblTestTranslation.setForeground(Color.BLACK);
+		lblTestTranslation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTestTranslation.setBorder(null);
+		lblTestTranslation.setBackground(Color.WHITE);
+		lblTestTranslation.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblTestTranslation.setOpaque(true);
+		lblTestTranslation.setFont(new Font("MS Gothic", Font.PLAIN, 36));
 		scrollTestTranslation.setViewportView(lblTestTranslation);
 		
 		lblTestQuestion = new JLabel("");
-		lblTestQuestion.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		lblTestQuestion.setForeground(Color.BLACK);
+		lblTestQuestion.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTestQuestion.setOpaque(true);
+		lblTestQuestion.setBorder(null);
+		lblTestQuestion.setBackground(Color.WHITE);
+		lblTestQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblTestQuestion.setFont(new Font("MS Gothic", Font.PLAIN, 36));
 		scrollTestQuestion.setViewportView(lblTestQuestion);
 		
 		lblTestAnswer = new JLabel("");
+		lblTestAnswer.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTestAnswer.setOpaque(true);
+		lblTestAnswer.setBorder(null);
+		lblTestAnswer.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblTestAnswer.setBackground(Color.WHITE);
-		lblTestAnswer.setFont(new Font("MS Gothic", Font.PLAIN, 20));
+		lblTestAnswer.setForeground(Color.BLACK);
+		lblTestAnswer.setFont(new Font("MS Gothic", Font.PLAIN, 36));
 		scrollTestAnswer.setViewportView(lblTestAnswer);
 		panelTestContent.setLayout(gl_panelTestContent);
 		
@@ -509,6 +562,7 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 		
 		SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -518,5 +572,17 @@ public class ClozeGeneratorGUI extends JFrame
             }
         });
 		
+		// HOME BUTTON - Set icons
+		btnHome.setIcon(new ImageIcon(sideDefault.getScaledInstance(btnHome.getWidth(), btnHome.getHeight(), Image.SCALE_SMOOTH)));
+		btnHome.setRolloverIcon(new ImageIcon(sideHover.getScaledInstance(btnHome.getWidth(), btnHome.getHeight(), Image.SCALE_SMOOTH)));
+		btnHome.setSelectedIcon(new ImageIcon(sideSelect.getScaledInstance(btnHome.getWidth(), btnHome.getHeight(), Image.SCALE_SMOOTH)));
+		// NEW CLOZE SET BUTTON - Set icons
+		btnCreateClozeSet.setIcon(new ImageIcon(sideDefault.getScaledInstance(btnCreateClozeSet.getWidth(), btnCreateClozeSet.getHeight(), Image.SCALE_SMOOTH)));
+		btnCreateClozeSet.setRolloverIcon(new ImageIcon(sideHover.getScaledInstance(btnCreateClozeSet.getWidth(), btnCreateClozeSet.getHeight(), Image.SCALE_SMOOTH)));
+		btnCreateClozeSet.setSelectedIcon(new ImageIcon(sideSelect.getScaledInstance(btnCreateClozeSet.getWidth(), btnCreateClozeSet.getHeight(), Image.SCALE_SMOOTH)));
+		// TEST BUTTON - Set icons
+		btnTest.setIcon(new ImageIcon(sideDefault.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
+		btnTest.setRolloverIcon(new ImageIcon(sideHover.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
+		btnTest.setSelectedIcon(new ImageIcon(sideSelect.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
 	}
 }

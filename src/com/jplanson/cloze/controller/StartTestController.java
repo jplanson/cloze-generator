@@ -69,8 +69,6 @@ public class StartTestController
 	
 	public ClozeQuestionInstance toQuestionInstance(ClozeQuestion clozeQuestion, ClozeText clozeText)
 	{
-		System.out.println("Start: " + clozeQuestion.start + ", End: " + clozeQuestion.end);
-		
 		// TODO: Implement this function
 		String question = clozeText.sampleText.substring(0, clozeQuestion.start) + "___" + clozeText.sampleText.substring(clozeQuestion.end);
 		String answer = clozeText.sampleText.substring(clozeQuestion.start, clozeQuestion.end);
