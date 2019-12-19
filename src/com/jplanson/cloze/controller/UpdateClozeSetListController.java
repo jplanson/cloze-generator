@@ -29,11 +29,16 @@ public class UpdateClozeSetListController
 		try 
 		{
 			List<ClozeText> clozeTexts = new ClozeTextDAO().getAllClozeTexts();
+			DefaultListModel<ClozeText> listModelClozeText = new DefaultListModel<ClozeText>();
 			model.masterClozeTexts = new HashMap<Integer, ClozeText>();
+			int i = 0;
 			for (ClozeText clozeText : clozeTexts)
 			{
 				model.masterClozeTexts.put(clozeText.id, clozeText);
 				model.masterClozeQuestions.put(clozeText.id, new ArrayList<ClozeQuestion>());
+				listModelClozeText.addElement(clozeText);
+				model.listIndexToClozeTextId.put(i, clozeText.id);
+				i++;
 			}
 			List<ClozeQuestion> clozeQuestions = new ClozeQuestionDAO().getAllClozeQuestions();
 			for (ClozeQuestion clozeQuestion : clozeQuestions)
@@ -41,11 +46,6 @@ public class UpdateClozeSetListController
 				model.masterClozeQuestions.get(clozeQuestion.clozeTextId).add(clozeQuestion);
 			}
 			
-			DefaultListModel<ClozeText> listModelClozeText = new DefaultListModel<ClozeText>();
-			for (ClozeText c : model.masterClozeTexts.values())
-			{
-				listModelClozeText.addElement(c);
-			}
 			gui.listClozeSet.setModel(listModelClozeText);
 		} 
 		catch (Exception e) 

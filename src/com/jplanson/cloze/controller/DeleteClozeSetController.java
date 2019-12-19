@@ -21,7 +21,12 @@ public class DeleteClozeSetController
 	
 	public void process(int clozeSetIndex)
 	{
-		ClozeText clozeText = model.masterClozeTexts.get(clozeSetIndex);
+		ClozeText clozeText = model.masterClozeTexts.get(model.listIndexToClozeTextId.get(clozeSetIndex));
+		if (clozeText == null)
+		{
+			// TODO: Print error somewhere and return
+			return;
+		}
 		
 		try 
 		{

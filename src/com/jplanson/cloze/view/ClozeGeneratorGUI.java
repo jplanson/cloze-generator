@@ -9,6 +9,8 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
@@ -52,6 +54,9 @@ public class ClozeGeneratorGUI extends JFrame
 	public JButton btnTestAdvance;
 	public JButton btnTestPrevious;
 	
+	private int frameWidth;
+	private int frameHeight;
+	
 	private Image sideDefault = new ImageIcon("res/default_side.png").getImage();
 	private Image sideHover = new ImageIcon("res/rollover_side.png").getImage();
 	private Image sideSelect = new ImageIcon("res/clicked_side.png").getImage();
@@ -66,40 +71,71 @@ public class ClozeGeneratorGUI extends JFrame
 		this.setTitle("Cloze Generator v1.0");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setPreferredSize(new Dimension(
-				(int) (screenSize.getWidth() * 3)/4, 
-				(int) (screenSize.getHeight() * 3)/4)
-		);
+		frameWidth = (int) (screenSize.getWidth() * 7) / 8;
+		frameHeight = (int) (screenSize.getHeight() * 7) / 8;
+		this.setPreferredSize(new Dimension(frameWidth, frameHeight));
 		
-		JSplitPane splitPane = new JSplitPane();
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 1422, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addComponent(splitPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
-		);
+		int sidePanelSize = (int) (frameWidth * 0.15);
+		GridBagLayout gblMain = new GridBagLayout();
+		gblMain.columnWidths = new int[] { sidePanelSize, frameWidth - sidePanelSize};
+		gblMain.rowWeights = new double[] {1.0};
+		getContentPane().setLayout(gblMain);
 		
+		
+		// addSidePanel();
 		JPanel panelSideBar = new JPanel();
-		panelSideBar.setBackground(new Color(0x404040));
-		splitPane.setLeftComponent(panelSideBar);
-		
-		JPanel panelContent = new JPanel();
-		splitPane.setRightComponent(panelContent);
-		panelContent.setLayout(new CardLayout(0, 0));
-		
+		panelSideBar.setBackground(Color.DARK_GRAY);
+		GridBagConstraints gbcSidePanel = new GridBagConstraints();
+		gbcSidePanel.fill = GridBagConstraints.BOTH;
+		gbcSidePanel.gridx = 0;
+		gbcSidePanel.gridy = 0;
+		getContentPane().add(panelSideBar, gbcSidePanel);
+	    
+	    // addContentPanel();
+		JPanel panelContent = new JPanel(new CardLayout(0, 0));
+		panelContent.setBackground(Color.RED);
+	    GridBagConstraints gbcContentPanel = new GridBagConstraints();
+	    gbcContentPanel.fill = GridBagConstraints.BOTH;
+	    gbcContentPanel.weightx = 0.85;
+	    gbcContentPanel.weighty = 1;
+	    gbcContentPanel.gridx = 1;
+	    gbcContentPanel.gridy = 0;
+	    getContentPane().add(panelContent, gbcContentPanel);
+	    
+	    this.pack();
+	    
+	    GridBagLayout gbl_panelSideBar = new GridBagLayout();
+	    gbl_panelSideBar.columnWidths = new int[]{0, 0};
+	    gbl_panelSideBar.rowHeights = new int[]{sidePanelSize, 55, 55, 55, 0};
+	    gbl_panelSideBar.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+	    gbl_panelSideBar.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+	    panelSideBar.setLayout(gbl_panelSideBar);
+	    
+	    // LOGO PANEL
+	    
+	    ImagePanel panelLogo = new ImagePanel("res/cloze_gen_logo.png");
+		GridBagConstraints gbc_panelLogo = new GridBagConstraints();
+	    gbc_panelLogo.insets = new Insets(10, 10, 5, 10);
+	    gbc_panelLogo.fill = GridBagConstraints.BOTH;
+	    gbc_panelLogo.gridx = 0;
+	    gbc_panelLogo.gridy = 0;
+	    panelSideBar.add(panelLogo, gbc_panelLogo);
+	    
 		// HOME BUTTON
 		JButton btnHome = new JButton("Home");
 		// Text
 		btnHome.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnHome.setForeground(Color.WHITE);
-		btnHome.setFont(new Font("Consolas", Font.PLAIN, 16));
+		btnHome.setFont(new Font("Consolas", Font.PLAIN, 20));
 		// Icon
 		btnHome.setRolloverEnabled(true);
-		btnHome.setMargin(new Insets(0, 0, 0, 0));
 		btnHome.setBorder(null);
+		// Positioning
+		GridBagConstraints gbc_btnHome = new GridBagConstraints();
+	    gbc_btnHome.fill = GridBagConstraints.BOTH;
+	    gbc_btnHome.insets = new Insets(5, 10, 5, 10);
+	    gbc_btnHome.gridx = 0;
+	    gbc_btnHome.gridy = 1;
 		// Action
 		btnHome.addActionListener(new ActionListener()
 		{
@@ -110,19 +146,26 @@ public class ClozeGeneratorGUI extends JFrame
 				cl.show(panelContent, "home");
 			}
 		});
+		panelSideBar.add(btnHome, gbc_btnHome);
 		
 		// START CREATE CLOZE 
 		
 		// NEW CLOZE SET BUTTON
-		JButton btnCreateClozeSet = new JButton("  Create Cloze Set  ");
+		JButton btnCreateClozeSet = new JButton("New Cloze Set");
 		// Text
 		btnCreateClozeSet.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnCreateClozeSet.setForeground(Color.WHITE);
-		btnCreateClozeSet.setFont(new Font("Consolas", Font.PLAIN, 16));
+		btnCreateClozeSet.setFont(new Font("Consolas", Font.PLAIN, 20));
 		// Icon
 		btnCreateClozeSet.setRolloverEnabled(true);
 		btnCreateClozeSet.setMargin(new Insets(0, 0, 0, 0));
 		btnCreateClozeSet.setBorder(null);
+		// Positioning
+		GridBagConstraints gbc_btnNewClozeSet = new GridBagConstraints();
+	    gbc_btnNewClozeSet.fill = GridBagConstraints.BOTH;
+	    gbc_btnNewClozeSet.insets = new Insets(5, 10, 5, 10);
+	    gbc_btnNewClozeSet.gridx = 0;
+	    gbc_btnNewClozeSet.gridy = 2;
 		// Action
 		btnCreateClozeSet.addActionListener(new ActionListener()
 		{
@@ -138,16 +181,23 @@ public class ClozeGeneratorGUI extends JFrame
 				cl.show(panelContent, "createCloze");
 			}
 		});
+		panelSideBar.add(btnCreateClozeSet, gbc_btnNewClozeSet);
 		
 		JButton btnTest = new JButton("Test");
 		// Text
 		btnTest.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnTest.setForeground(Color.WHITE);
-		btnTest.setFont(new Font("Consolas", Font.PLAIN, 16));
+		btnTest.setFont(new Font("Consolas", Font.PLAIN, 20));
 		// Icon
 		btnTest.setRolloverEnabled(true);
 		btnTest.setMargin(new Insets(0, 0, 0, 0));
 		btnTest.setBorder(null);
+		//Positioning 
+		GridBagConstraints gbc_btnTest = new GridBagConstraints();
+	    gbc_btnTest.fill = GridBagConstraints.BOTH;
+	    gbc_btnTest.insets = new Insets(5, 10, 5, 10);
+	    gbc_btnTest.gridx = 0;
+	    gbc_btnTest.gridy = 3;
 		// Action
 		btnTest.addActionListener(new ActionListener()
 		{
@@ -168,35 +218,9 @@ public class ClozeGeneratorGUI extends JFrame
 				cl.show(panelContent, "test");
 			}
 		});
+		panelSideBar.add(btnTest, gbc_btnTest);
 		
-		ImagePanel panelLogo = new ImagePanel("res/cloze_gen_logo.png");
-		
-		GroupLayout gl_panelSideBar = new GroupLayout(panelSideBar);
-		gl_panelSideBar.setHorizontalGroup(
-			gl_panelSideBar.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelSideBar.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panelSideBar.createParallelGroup(Alignment.LEADING)
-						.addComponent(panelLogo, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-						.addComponent(btnHome, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-						.addComponent(btnCreateClozeSet, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-						.addComponent(btnTest, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		gl_panelSideBar.setVerticalGroup(
-			gl_panelSideBar.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelSideBar.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(panelLogo, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnHome, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnCreateClozeSet, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnTest, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(437, Short.MAX_VALUE))
-		);
-		panelSideBar.setLayout(gl_panelSideBar);
+	    // HOME PANEL
 		
 		panelHome = new JPanel();
 		panelHome.setBackground(Color.WHITE);
@@ -253,7 +277,6 @@ public class ClozeGeneratorGUI extends JFrame
 						@Override
 						public void actionPerformed(ActionEvent arg0) 
 						{
-							System.out.println(listClozeSet.getSelectedIndex());
 							DeleteClozeSetController dcs = new DeleteClozeSetController(model, ClozeGeneratorGUI.this);
 							dcs.process(listClozeSet.getSelectedIndex());
 						}
@@ -261,9 +284,7 @@ public class ClozeGeneratorGUI extends JFrame
 					
 					menuRightClick.add(edit);
 					menuRightClick.add(delete);
-//					menuRightClick.show(ClozeGeneratorGUI.this, listClozeSet.getX() + e.getX(), listClozeSet.getY() + e.getY());
 					menuRightClick.show(e.getComponent(), e.getX(), e.getY());
-
 				}
 			}
 
@@ -556,12 +577,12 @@ public class ClozeGeneratorGUI extends JFrame
 			}
 		});
 		panelTestButtons.add(btnTestAdvance);
-		getContentPane().setLayout(groupLayout);
 		
 		// END TEST
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
+		//this.setResizable(false);
 		this.setVisible(true);
 		
 		SwingUtilities.invokeLater(new Runnable() {

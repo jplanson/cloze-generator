@@ -9,6 +9,7 @@ public class Model
 	
 	public HashMap<Integer, ClozeText> masterClozeTexts;
 	public HashMap<Integer, ArrayList<ClozeQuestion>> masterClozeQuestions = new HashMap<Integer, ArrayList<ClozeQuestion>>();
+	public HashMap<Integer, Integer> listIndexToClozeTextId = new HashMap<Integer, Integer>();
 	
 	public TestState testState = new TestState();
 }
