@@ -14,6 +14,8 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
@@ -225,34 +227,83 @@ public class ClozeGeneratorGUI extends JFrame
 		panelHome = new JPanel();
 		panelHome.setBackground(Color.WHITE);
 		panelContent.add(panelHome, "home");
+		GridBagLayout gbl_panelHome2 = new GridBagLayout();
+		gbl_panelHome2.columnWidths = new int[]{0, 0, 0};
+		gbl_panelHome2.rowHeights = new int[]{80, 0, 0};
+		gbl_panelHome2.columnWeights = new double[]{0.07, 0.86, 0.07};
+		gbl_panelHome2.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		panelHome.setLayout(gbl_panelHome2);
 		
-		JLabel lblClozeTextList = new JLabel("Cloze Sets:");
-		lblClozeTextList.setFont(new Font("Consolas", Font.PLAIN, 24));
+		JPanel panelHomeLeft = new JPanel();
+		panelHomeLeft.setBackground(Color.WHITE);
+		GridBagConstraints gbc_panelHomeLeft = new GridBagConstraints();
+		gbc_panelHomeLeft.gridheight = 2;
+		gbc_panelHomeLeft.fill = GridBagConstraints.BOTH;
+		gbc_panelHomeLeft.gridx = 0;
+		gbc_panelHomeLeft.gridy = 0;
+		panelHome.add(panelHomeLeft, gbc_panelHomeLeft);
 		
-		JScrollPane scrollClozeSet = new JScrollPane();
-		scrollClozeSet.setBorder(new LineBorder(new Color(130, 135, 144), 2));
-		GroupLayout gl_panelHome = new GroupLayout(panelHome);
-		gl_panelHome.setHorizontalGroup(
-			gl_panelHome.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelHome.createSequentialGroup()
-					.addGap(59)
-					.addGroup(gl_panelHome.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollClozeSet, GroupLayout.PREFERRED_SIZE, 1108, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblClozeTextList))
-					.addContainerGap(47, Short.MAX_VALUE))
-		);
-		gl_panelHome.setVerticalGroup(
-			gl_panelHome.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelHome.createSequentialGroup()
-					.addGap(65)
-					.addComponent(lblClozeTextList)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollClozeSet, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(57, Short.MAX_VALUE))
-		);
+		JPanel panelHomeRight = new JPanel();
+		panelHomeRight.setBackground(Color.WHITE);
+		GridBagConstraints gbc_panelHomeRight = new GridBagConstraints();
+		gbc_panelHomeRight.gridheight = 2;
+		gbc_panelHomeRight.fill = GridBagConstraints.BOTH;
+		gbc_panelHomeRight.gridx = 2;
+		gbc_panelHomeRight.gridy = 0;
+		panelHome.add(panelHomeRight, gbc_panelHomeRight);
+		
+		JLabel lblClozeSets = new JLabel("Cloze Sets");
+		lblClozeSets.setFont(new Font("Consolas", Font.PLAIN, 24));
+		lblClozeSets.setOpaque(true);
+		lblClozeSets.setBackground(Color.WHITE);
+		lblClozeSets.setVerticalTextPosition(SwingConstants.BOTTOM);
+		lblClozeSets.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblClozeSets.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblClozeSets.setHorizontalAlignment(SwingConstants.LEFT);
+		GridBagConstraints gbc_lblClozeSets = new GridBagConstraints();
+		gbc_lblClozeSets.insets = new Insets(10, 10, 5, 10);
+		gbc_lblClozeSets.fill = GridBagConstraints.BOTH;
+		gbc_lblClozeSets.gridx = 1;
+		gbc_lblClozeSets.gridy = 0;
+		panelHome.add(lblClozeSets, gbc_lblClozeSets);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new LineBorder(Color.BLACK, 2));
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.insets = new Insets(0, 0, 70, 0);
+		gbc_scrollPane.gridx = 1;
+		gbc_scrollPane.gridy = 1;
+		panelHome.add(scrollPane, gbc_scrollPane);
 		
 		listClozeSet = new JList<ClozeText>();
+		listClozeSet.setSelectionBackground(Color.DARK_GRAY);
+		listClozeSet.setSelectionForeground(Color.WHITE);
 		listClozeSet.setFont(new Font("MS Gothic", Font.BOLD, 18));
+		JPopupMenu menuRightClick = new JPopupMenu();
+		menuRightClick.setBorder(new LineBorder(Color.DARK_GRAY, 1));
+		CG_MenuItem edit = new CG_MenuItem("Edit");
+		edit.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				System.out.println(listClozeSet.getSelectedIndex());
+			}
+		});
+		CG_MenuItem delete = new CG_MenuItem("Delete");
+		delete.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				DeleteClozeSetController dcs = new DeleteClozeSetController(model, ClozeGeneratorGUI.this);
+				dcs.process(listClozeSet.getSelectedIndex());
+			}
+		});
+		
+		menuRightClick.add(edit);
+		menuRightClick.add(delete);
 		listClozeSet.addMouseListener(new MouseListener()
 		{
 			@Override
@@ -261,29 +312,6 @@ public class ClozeGeneratorGUI extends JFrame
 				if (SwingUtilities.isRightMouseButton(e))
 				{
 					if (listClozeSet.getSelectedIndex() == -1) { return; }
-					JPopupMenu menuRightClick = new JPopupMenu();
-					JMenuItem edit = new JMenuItem("Edit");
-					edit.addActionListener(new ActionListener() 
-					{
-						@Override
-						public void actionPerformed(ActionEvent arg0) 
-						{
-							System.out.println(listClozeSet.getSelectedIndex());
-						}
-					});
-					JMenuItem delete = new JMenuItem("Delete");
-					delete.addActionListener(new ActionListener() 
-					{
-						@Override
-						public void actionPerformed(ActionEvent arg0) 
-						{
-							DeleteClozeSetController dcs = new DeleteClozeSetController(model, ClozeGeneratorGUI.this);
-							dcs.process(listClozeSet.getSelectedIndex());
-						}
-					});
-					
-					menuRightClick.add(edit);
-					menuRightClick.add(delete);
 					menuRightClick.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
@@ -300,8 +328,7 @@ public class ClozeGeneratorGUI extends JFrame
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
 		});
-		scrollClozeSet.setViewportView(listClozeSet);
-		panelHome.setLayout(gl_panelHome);
+		scrollPane.setViewportView(listClozeSet);
 		
 		panelCreateCloze = new JPanel();
 		panelCreateCloze.setBackground(Color.WHITE);
@@ -409,6 +436,12 @@ public class ClozeGeneratorGUI extends JFrame
 		JPanel panelTestSelect = new JPanel();
 		panelTestSelect.setBackground(Color.WHITE);
 		panelTest.add(panelTestSelect, "testSelect");
+		GridBagLayout gbl_panelTestSelect = new GridBagLayout();
+		gbl_panelTestSelect.columnWidths = new int[]{0, 0};
+		gbl_panelTestSelect.rowHeights = new int[]{0, 0, 0};
+		gbl_panelTestSelect.rowWeights = new double[]{0.8, 0.2, Double.MIN_VALUE};
+		gbl_panelTestSelect.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		panelTestSelect.setLayout(gbl_panelTestSelect);
 		
 		JButton btnStartTest = new JButton("Start");
 		btnStartTest.addActionListener(new ActionListener()
@@ -427,22 +460,22 @@ public class ClozeGeneratorGUI extends JFrame
 				});
 			}	
 		});
-		GroupLayout gl_panelTestSelect = new GroupLayout(panelTestSelect);
-		gl_panelTestSelect.setHorizontalGroup(
-			gl_panelTestSelect.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelTestSelect.createSequentialGroup()
-					.addGap(484)
-					.addComponent(btnStartTest, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(613, Short.MAX_VALUE))
-		);
-		gl_panelTestSelect.setVerticalGroup(
-			gl_panelTestSelect.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panelTestSelect.createSequentialGroup()
-					.addContainerGap(658, Short.MAX_VALUE)
-					.addComponent(btnStartTest, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)
-					.addGap(66))
-		);
-		panelTestSelect.setLayout(gl_panelTestSelect);
+		
+		JLabel lblTestCustomizationIs = new JLabel("<html><div style='text-align:center'>Test customization is an upcoming feature. For now, each test is a random<br>permutation of all possible cloze questions.</div></html>");
+		lblTestCustomizationIs.setFont(new Font("Consolas", Font.PLAIN, 24));
+		lblTestCustomizationIs.setForeground(Color.BLACK);
+		lblTestCustomizationIs.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblTestCustomizationIs.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTestCustomizationIs.setHorizontalTextPosition(SwingConstants.CENTER);
+		GridBagConstraints gbc_lblTestCustomizationIs = new GridBagConstraints();
+		gbc_lblTestCustomizationIs.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTestCustomizationIs.gridx = 0;
+		gbc_lblTestCustomizationIs.gridy = 0;
+		panelTestSelect.add(lblTestCustomizationIs, gbc_lblTestCustomizationIs);
+		GridBagConstraints gbc_btnStartTest = new GridBagConstraints();
+		gbc_btnStartTest.gridx = 0;
+		gbc_btnStartTest.gridy = 1;
+		panelTestSelect.add(btnStartTest, gbc_btnStartTest);
 		
 		JPanel panelTestPerform = new JPanel();
 		panelTestPerform.setBackground(Color.WHITE);
@@ -605,5 +638,9 @@ public class ClozeGeneratorGUI extends JFrame
 		btnTest.setIcon(new ImageIcon(sideDefault.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
 		btnTest.setRolloverIcon(new ImageIcon(sideHover.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
 		btnTest.setSelectedIcon(new ImageIcon(sideSelect.getScaledInstance(btnTest.getWidth(), btnTest.getHeight(), Image.SCALE_SMOOTH)));
+		
+		CardLayout cl = (CardLayout) panelContent.getLayout();
+		cl.show(panelContent, "home2");
+		
 	}
 }
