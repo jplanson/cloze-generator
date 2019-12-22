@@ -4,7 +4,7 @@ import java.awt.CardLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.jplanson.cloze.model.ClozeQuestionInstance;
+import com.jplanson.cloze.model.TestQuestion;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.model.ClozeQuestion;
@@ -24,14 +24,14 @@ public class StartTestController
 	public void process()
 	{
 		// Create ClozeQuestionInstances and randomize
-		model.testState.clozeQuestionInstances = getTestQuestions();
+		model.testState.testQuestions = getTestQuestions();
 		
 		// Randomize
-		Collections.shuffle(model.testState.clozeQuestionInstances);
+		Collections.shuffle(model.testState.testQuestions);
 		
-		if (model.testState.clozeQuestionInstances.size() == 0)
+		if (model.testState.testQuestions.size() == 0)
 		{
-			model.testState.clozeQuestionInstances = null;
+			model.testState.testQuestions = null;
 			return;
 		}
 		
@@ -48,9 +48,9 @@ public class StartTestController
 		testLayout.show(gui.panelTest, "testPerform");
 	}
 	
-	public ArrayList<ClozeQuestionInstance> getTestQuestions()
+	public ArrayList<TestQuestion> getTestQuestions()
 	{
-		ArrayList<ClozeQuestionInstance> clozeQuestionInstances = new ArrayList<ClozeQuestionInstance>();
+		ArrayList<TestQuestion> testQuestions = new ArrayList<TestQuestion>();
 		
 		for (Integer key : model.masterClozeQuestions.keySet())
 		{
@@ -59,21 +59,20 @@ public class StartTestController
 			
 			for (ClozeQuestion clozeQuestion : clozeTextQuestions)
 			{
-				ClozeQuestionInstance clozeQuestionInstance = toQuestionInstance(clozeQuestion, clozeText);
-				clozeQuestionInstances.add(clozeQuestionInstance);
+				TestQuestion testQuestion = toTestQuestion(clozeQuestion, clozeText);
+				testQuestions.add(testQuestion);
 			}
 		}
 		
-		return clozeQuestionInstances;
+		return testQuestions;
 	}
 	
-	public ClozeQuestionInstance toQuestionInstance(ClozeQuestion clozeQuestion, ClozeText clozeText)
+	public TestQuestion toTestQuestion(ClozeQuestion clozeQuestion, ClozeText clozeText)
 	{
-		// TODO: Implement this function
 		String question = clozeText.sampleText.substring(0, clozeQuestion.start) + "___" + clozeText.sampleText.substring(clozeQuestion.end);
 		String answer = clozeText.sampleText.substring(clozeQuestion.start, clozeQuestion.end);
 		
-		return new ClozeQuestionInstance(question, clozeText.translation, answer);
+		return new TestQuestion(question, clozeText.translation, answer);
 	}
 	
 	public static void clearTest(ClozeGeneratorGUI gui)

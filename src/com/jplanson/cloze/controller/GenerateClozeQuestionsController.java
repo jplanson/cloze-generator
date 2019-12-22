@@ -82,7 +82,7 @@ public class GenerateClozeQuestionsController
 		model.createClozeText = null;
 		
 		// Refresh home page list
-		UpdateClozeSetListController ucsl = new UpdateClozeSetListController(model, gui);
+		UpdateClozeQuestionListController ucsl = new UpdateClozeQuestionListController(model, gui);
 		ucsl.process();
 	}
 }

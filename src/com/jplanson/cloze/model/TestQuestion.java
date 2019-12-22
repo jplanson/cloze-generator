@@ -1,12 +1,12 @@
 package com.jplanson.cloze.model;
 
-public class ClozeQuestionInstance 
+public class TestQuestion 
 {
 	public String question;
 	public String translation;
 	public String answer;
 	
-	public ClozeQuestionInstance(String question, String translation, String answer)
+	public TestQuestion(String question, String translation, String answer)
 	{
 		this.question = question;
 		this.translation = translation;

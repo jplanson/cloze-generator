@@ -29,7 +29,7 @@ public class DisplayQuestionController
 			model.testState.questionNum = 0;
 			gui.btnTestPrevious.setEnabled(false);
 		}
-		else if (model.testState.questionNum == model.testState.clozeQuestionInstances.size())
+		else if (model.testState.questionNum == model.testState.testQuestions.size())
 		{
 			// Test is over, return to selection screen
 			CardLayout cl = (CardLayout) gui.panelTest.getLayout();
@@ -37,8 +37,8 @@ public class DisplayQuestionController
 			return;
 		}
 		
-		gui.lblTestQuestion.setText(model.testState.clozeQuestionInstances.get(model.testState.questionNum).question);
-		gui.lblTestTranslation.setText(model.testState.clozeQuestionInstances.get(model.testState.questionNum).translation);
+		gui.lblTestQuestion.setText(model.testState.testQuestions.get(model.testState.questionNum).question);
+		gui.lblTestTranslation.setText(model.testState.testQuestions.get(model.testState.questionNum).translation);
 		gui.lblTestAnswer.setText("");
 		
 		gui.btnTestAdvance.setText("Answer");

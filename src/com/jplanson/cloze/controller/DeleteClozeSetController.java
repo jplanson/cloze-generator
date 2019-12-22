@@ -37,7 +37,7 @@ public class DeleteClozeSetController
 			e.printStackTrace();
 		}
 		
-		UpdateClozeSetListController ucsl = new UpdateClozeSetListController(model, gui);
+		UpdateClozeQuestionListController ucsl = new UpdateClozeQuestionListController(model, gui);
 		ucsl.process();
 	}
 }

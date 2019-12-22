@@ -19,7 +19,7 @@ public class AnswerQuestionController
 		if (!model.testState.started) { return; }
 		
 		gui.btnTestPrevious.setEnabled(true);
-		gui.lblTestAnswer.setText(model.testState.clozeQuestionInstances.get(model.testState.questionNum).answer);
+		gui.lblTestAnswer.setText(model.testState.testQuestions.get(model.testState.questionNum).answer);
 		gui.btnTestAdvance.setText("Next");
 	}
 }

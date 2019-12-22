@@ -13,12 +13,12 @@ import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
-public class UpdateClozeSetListController 
+public class UpdateClozeQuestionListController 
 {
 	Model model;
 	ClozeGeneratorGUI gui;
 	
-	public UpdateClozeSetListController(Model model, ClozeGeneratorGUI gui)
+	public UpdateClozeQuestionListController(Model model, ClozeGeneratorGUI gui)
 	{
 		this.model = model;
 		this.gui = gui;
