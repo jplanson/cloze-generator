@@ -8,14 +8,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jplanson.cloze.model.ClozeQuestion;
-import com.jplanson.cloze.model.ClozeText;
+import com.jplanson.cloze.model.DbClozeQuestion;
 
-public class ClozeQuestionDAO 
+public class DbClozeQuestionDAO 
 {
 	Connection conn;
 	
-	public ClozeQuestionDAO()
+	public DbClozeQuestionDAO()
 	{
 		try 
 		{
@@ -27,7 +26,7 @@ public class ClozeQuestionDAO
 		}
 	}
 	
-	public int insertClozeQuestion(ClozeQuestion cq) throws Exception
+	public int insertClozeQuestion(DbClozeQuestion cq) throws Exception
 	{
 		try
 		{
@@ -51,9 +50,9 @@ public class ClozeQuestionDAO
 		}
 	}
 	
-	public List<ClozeQuestion> getAllClozeQuestions() throws Exception
+	public List<DbClozeQuestion> getAllClozeQuestions() throws Exception
 	{
-		List<ClozeQuestion> allClozeQuestions = new ArrayList<ClozeQuestion>();
+		List<DbClozeQuestion> allClozeQuestions = new ArrayList<DbClozeQuestion>();
 		try
 		{
 			Statement s = conn.createStatement();
@@ -61,7 +60,7 @@ public class ClozeQuestionDAO
 			
 			while (resultSet.next())
 			{
-				ClozeQuestion clozeText = generateClozeQuestion(resultSet);
+				DbClozeQuestion clozeText = generateClozeQuestion(resultSet);
 				allClozeQuestions.add(clozeText);
 			}
 			
@@ -73,14 +72,14 @@ public class ClozeQuestionDAO
 		}
 	}
 
-	private ClozeQuestion generateClozeQuestion(ResultSet resultSet) throws Exception
+	private DbClozeQuestion generateClozeQuestion(ResultSet resultSet) throws Exception
 	{
 		Integer id = resultSet.getInt("id");
 		Integer clozeTextId = resultSet.getInt("clozeTextId");
 		Integer start = resultSet.getInt("start");
 		Integer end = resultSet.getInt("end");
 		
-		return new ClozeQuestion(id, clozeTextId, start, end);
+		return new DbClozeQuestion(id, clozeTextId, start, end);
 	}
 	
 	public void deleteByTextId(Integer id) throws Exception
@@ -96,6 +95,22 @@ public class ClozeQuestionDAO
 		catch (SQLException se)
 		{
 			throw new Exception("Unable to delete cloze questions: " + se.getMessage());
+		}
+	}
+
+	public void deleteById(Integer id) throws Exception
+	{
+		Connection conn = DatabaseUtil.connect();
+		
+		try
+		{
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM clozeQuestions WHERE id = ?;");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		}
+		catch (SQLException se)
+		{
+			throw new Exception("Unable to delete cloze question: " + se.getMessage());
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.jplanson.cloze.model.TestQuestion;
-import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.model.ClozeQuestion;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
@@ -54,25 +53,11 @@ public class StartTestController
 		
 		for (Integer key : model.masterClozeQuestions.keySet())
 		{
-			ArrayList<ClozeQuestion> clozeTextQuestions = model.masterClozeQuestions.get(key);
-			ClozeText clozeText = model.masterClozeTexts.get(key);
-			
-			for (ClozeQuestion clozeQuestion : clozeTextQuestions)
-			{
-				TestQuestion testQuestion = toTestQuestion(clozeQuestion, clozeText);
-				testQuestions.add(testQuestion);
-			}
+			ClozeQuestion clozeQuestion = model.masterClozeQuestions.get(key);
+			testQuestions.add(clozeQuestion.toTestQuestion());
 		}
 		
 		return testQuestions;
-	}
-	
-	public TestQuestion toTestQuestion(ClozeQuestion clozeQuestion, ClozeText clozeText)
-	{
-		String question = clozeText.sampleText.substring(0, clozeQuestion.start) + "___" + clozeText.sampleText.substring(clozeQuestion.end);
-		String answer = clozeText.sampleText.substring(clozeQuestion.start, clozeQuestion.end);
-		
-		return new TestQuestion(question, clozeText.translation, answer);
 	}
 	
 	public static void clearTest(ClozeGeneratorGUI gui)

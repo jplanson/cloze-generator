@@ -3,10 +3,10 @@ package com.jplanson.cloze.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jplanson.cloze.dao.ClozeQuestionDAO;
+import com.jplanson.cloze.dao.DbClozeQuestionDAO;
 import com.jplanson.cloze.dao.ClozeTextDAO;
 import com.jplanson.cloze.model.ClozeComponent;
-import com.jplanson.cloze.model.ClozeQuestion;
+import com.jplanson.cloze.model.DbClozeQuestion;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
@@ -28,7 +28,7 @@ public class GenerateClozeQuestionsController
 			return;
 		}
 		
-		List<ClozeQuestion> clozeQuestions = new ArrayList<ClozeQuestion>();
+		List<DbClozeQuestion> dbClozeQuestions = new ArrayList<DbClozeQuestion>();
 		
 		// Separate input into chunks based on state
 		int i = 0;
@@ -50,20 +50,20 @@ public class GenerateClozeQuestionsController
 			
 			end = i;
 			
-			ClozeQuestion clozeQuestion = new ClozeQuestion(null, null, start, end);
-			clozeQuestions.add(clozeQuestion);
+			DbClozeQuestion dbClozeQuestion = new DbClozeQuestion(null, null, start, end);
+			dbClozeQuestions.add(dbClozeQuestion);
 		}
 		
 		try 
 		{
 			int clozeTextId = new ClozeTextDAO().insertClozeText(model.createClozeText);
 			
-			ClozeQuestionDAO clozeQuestionDAO = new ClozeQuestionDAO();
-			for (i = 0; i < clozeQuestions.size(); i++)
+			DbClozeQuestionDAO dbClozeQuestionDAO = new DbClozeQuestionDAO();
+			for (i = 0; i < dbClozeQuestions.size(); i++)
 			{
-				ClozeQuestion cq = clozeQuestions.get(i);
-				cq.clozeTextId = clozeTextId;
-				clozeQuestionDAO.insertClozeQuestion(cq);
+				DbClozeQuestion dcq = dbClozeQuestions.get(i);
+				dcq.clozeTextId = clozeTextId;
+				dbClozeQuestionDAO.insertClozeQuestion(dcq);
 			}
 		} 
 		catch (Exception e) 

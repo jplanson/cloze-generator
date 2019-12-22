@@ -1,20 +1,28 @@
 package com.jplanson.cloze.model;
 
-import java.util.Date;
-
-public class ClozeQuestion 
+public class ClozeQuestion
 {
-	public Integer id;
-	public Integer clozeTextId;
-	public int start;
-	public int end;
-	public Date createTime;
+	public ClozeText parent;
+	public DbClozeQuestion dbQuestion;
 	
-	public ClozeQuestion(Integer id, Integer clozeTextId, int start, int end)
+	public ClozeQuestion(ClozeText parent, DbClozeQuestion dbQuestion)
 	{
-		this.id = id;
-		this.clozeTextId = clozeTextId;
-		this.start = start;
-		this.end = end;
+		this.parent = parent;
+		this.dbQuestion = dbQuestion;
+	}
+	
+	public TestQuestion toTestQuestion()
+	{
+		String question = parent.sampleText.substring(0, dbQuestion.start) + "___" + parent.sampleText.substring(dbQuestion.end);
+		String answer = parent.sampleText.substring(dbQuestion.start, dbQuestion.end);
+		
+		return new TestQuestion(question, parent.translation, answer);
+	}
+	
+	@Override
+	public String toString()
+	{
+		TestQuestion question = toTestQuestion();
+		return "ID: " + dbQuestion.id + "  |  " + question.answer + "  | " + question.translation + "  |  " + parent.id;
 	}
 }

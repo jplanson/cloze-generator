@@ -1,16 +1,16 @@
 package com.jplanson.cloze.controller;
 
-import com.jplanson.cloze.dao.ClozeTextDAO;
-import com.jplanson.cloze.model.ClozeText;
+import com.jplanson.cloze.dao.DbClozeQuestionDAO;
+import com.jplanson.cloze.model.ClozeQuestion;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
-public class DeleteClozeSetController 
+public class DeleteClozeQuestionController 
 {
 	public Model model;
 	public ClozeGeneratorGUI gui;
 	
-	public DeleteClozeSetController(Model model, ClozeGeneratorGUI gui)
+	public DeleteClozeQuestionController(Model model, ClozeGeneratorGUI gui)
 	{
 		this.model = model;
 		this.gui = gui;
@@ -18,17 +18,17 @@ public class DeleteClozeSetController
 	
 	public void process(int clozeQuestionIndex)
 	{
-		ClozeText clozeText = model.masterClozeQuestions.get(model.listIndexToClozeQuestionId.get(clozeQuestionIndex)).parent;
-		if (clozeText == null)
+		ClozeQuestion clozeQuestion = model.masterClozeQuestions.get(model.listIndexToClozeQuestionId.get(clozeQuestionIndex));
+		if (clozeQuestion == null)
 		{
 			// TODO: Print error somewhere and return
-			System.out.println("Cloze text is Null!");
+			System.out.println("Cloze question is Null!");
 			return;
 		}
 		
 		try 
 		{
-			new ClozeTextDAO().deleteClozeText(clozeText.id);
+			new DbClozeQuestionDAO().deleteById(clozeQuestion.dbQuestion.id);
 		} 
 		catch (Exception e) 
 		{

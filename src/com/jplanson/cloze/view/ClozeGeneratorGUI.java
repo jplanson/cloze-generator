@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 
 import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -20,15 +19,15 @@ import java.awt.CardLayout;
 import javax.swing.border.LineBorder;
 
 import com.jplanson.cloze.controller.AnswerQuestionController;
+import com.jplanson.cloze.controller.DeleteClozeQuestionController;
 import com.jplanson.cloze.controller.DeleteClozeSetController;
 import com.jplanson.cloze.controller.DisplayQuestionController;
 import com.jplanson.cloze.controller.GenerateClozeQuestionsController;
 import com.jplanson.cloze.controller.ProcessClozeInputController;
 import com.jplanson.cloze.controller.StartTestController;
 import com.jplanson.cloze.controller.UpdateClozeQuestionListController;
-import com.jplanson.cloze.model.ClozeText;
+import com.jplanson.cloze.model.ClozeQuestion;
 import com.jplanson.cloze.model.Model;
-import java.awt.BorderLayout;
 import java.awt.Component;
 
 public class ClozeGeneratorGUI extends JFrame 
@@ -38,7 +37,7 @@ public class ClozeGeneratorGUI extends JFrame
 	Model model;
 	
 	public JPanel panelHome;
-	public JList<ClozeText> listClozeSet;
+	public JList<ClozeQuestion> listClozeSet;
 	
 	public JPanel panelNewCloze;
 	public JTextArea inputSampleText;
@@ -266,7 +265,7 @@ public class ClozeGeneratorGUI extends JFrame
 		gbc_scrollPane.gridy = 1;
 		panelHome.add(scrollPane, gbc_scrollPane);
 		
-		listClozeSet = new JList<ClozeText>();
+		listClozeSet = new JList<ClozeQuestion>();
 		listClozeSet.setSelectionBackground(Color.DARK_GRAY);
 		listClozeSet.setSelectionForeground(Color.WHITE);
 		listClozeSet.setFont(new Font("MS Gothic", Font.PLAIN, 20));
@@ -283,8 +282,20 @@ public class ClozeGeneratorGUI extends JFrame
 				layout.show(panelContent, "editClozeSet");
 			}
 		});
+		menuRightClick.add(edit);
 		CG_MenuItem delete = new CG_MenuItem("Delete");
-		delete.addActionListener(new ActionListener() 
+		delete.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				DeleteClozeQuestionController dcq = new DeleteClozeQuestionController(model, ClozeGeneratorGUI.this);
+				dcq.process(listClozeSet.getSelectedIndex());
+			}
+		});
+		menuRightClick.add(delete);
+		CG_MenuItem deleteSet = new CG_MenuItem("Delete Set");
+		deleteSet.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
@@ -293,9 +304,8 @@ public class ClozeGeneratorGUI extends JFrame
 				dcs.process(listClozeSet.getSelectedIndex());
 			}
 		});
+		menuRightClick.add(deleteSet);
 		
-		menuRightClick.add(edit);
-		menuRightClick.add(delete);
 		listClozeSet.addMouseListener(new MouseListener()
 		{
 			@Override

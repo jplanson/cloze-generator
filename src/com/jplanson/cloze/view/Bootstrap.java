@@ -1,13 +1,5 @@
 package com.jplanson.cloze.view;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import com.jplanson.cloze.dao.DatabaseUtil;
 
 public class Bootstrap 
@@ -27,6 +19,7 @@ public class Bootstrap
 		}
 
 		// Display GUI
+		@SuppressWarnings("unused")
 		ClozeGeneratorGUI frame = new ClozeGeneratorGUI();
 	}
 }

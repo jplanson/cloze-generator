@@ -105,8 +105,8 @@ public class ClozeTextDAO
 
 	public void deleteClozeText(Integer id) throws Exception
 	{	
-		// Delete all related ClozeQuestions
-		new ClozeQuestionDAO().deleteByTextId(id);
+		// Delete all related DbClozeQuestions
+		new DbClozeQuestionDAO().deleteByTextId(id);
 		
 		// Delete the cloze text itself
 		Connection conn = DatabaseUtil.connect();

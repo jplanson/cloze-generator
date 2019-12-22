@@ -26,7 +26,7 @@ public class ClozeText
 		}
 	}
 	
-	public ClozeText(Integer id, String sampleText, String translation, List<ClozeQuestion> clozeQuestions)
+	public ClozeText(Integer id, String sampleText, String translation, List<DbClozeQuestion> clozeQuestions)
 	{
 		this.id = id;
 		this.sampleText = sampleText;
