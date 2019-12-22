@@ -22,6 +22,7 @@ import com.jplanson.cloze.controller.AnswerQuestionController;
 import com.jplanson.cloze.controller.DeleteClozeQuestionController;
 import com.jplanson.cloze.controller.DeleteClozeSetController;
 import com.jplanson.cloze.controller.DisplayQuestionController;
+import com.jplanson.cloze.controller.EditClozeSetController;
 import com.jplanson.cloze.controller.GenerateClozeQuestionsController;
 import com.jplanson.cloze.controller.ProcessClozeInputController;
 import com.jplanson.cloze.controller.StartTestController;
@@ -37,12 +38,15 @@ public class ClozeGeneratorGUI extends JFrame
 	Model model;
 	
 	public JPanel panelHome;
+	public JPanel panelContent;
 	public JList<ClozeQuestion> listClozeSet;
 	
 	public JPanel panelNewCloze;
 	public JTextArea inputSampleText;
 	public JTextArea inputTranslation;
 	public JPanel panelProcessing;
+	
+	public JPanel panelEditProcessing;
 	
 	public JPanel panelTest;
 	public JLabel lblTestTranslation;
@@ -90,7 +94,7 @@ public class ClozeGeneratorGUI extends JFrame
 		getContentPane().add(panelSideBar, gbcSidePanel);
 	    
 	    // addContentPanel();
-		JPanel panelContent = new JPanel(new CardLayout(0, 0));
+		panelContent = new JPanel(new CardLayout(0, 0));
 		panelContent.setBackground(Color.RED);
 	    GridBagConstraints gbcContentPanel = new GridBagConstraints();
 	    gbcContentPanel.fill = GridBagConstraints.BOTH;
@@ -277,9 +281,8 @@ public class ClozeGeneratorGUI extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				System.out.println(listClozeSet.getSelectedIndex());
-				CardLayout layout = (CardLayout) panelContent.getLayout();
-				layout.show(panelContent, "editClozeSet");
+				EditClozeSetController ecs = new EditClozeSetController(model, ClozeGeneratorGUI.this);
+				ecs.process(listClozeSet.getSelectedIndex());
 			}
 		});
 		menuRightClick.add(edit);
@@ -495,7 +498,7 @@ public class ClozeGeneratorGUI extends JFrame
 	                @Override
 	                public void run() {
 	                	GenerateClozeQuestionsController gcq = new GenerateClozeQuestionsController(model, ClozeGeneratorGUI.this);
-	    				gcq.process();
+	    				gcq.process(true);
 	                }
 	            });
 			}
@@ -513,6 +516,7 @@ public class ClozeGeneratorGUI extends JFrame
 		panelEditCloze.setLayout(gbl_panelEditCloze);
 		
 		JPanel panelEditClozeLeft = new JPanel();
+		panelEditClozeLeft.setBackground(Color.WHITE);
 		GridBagConstraints gbc_panelEditClozeLeft = new GridBagConstraints();
 		gbc_panelEditClozeLeft.fill = GridBagConstraints.BOTH;
 		gbc_panelEditClozeLeft.gridx = 0;
@@ -520,6 +524,7 @@ public class ClozeGeneratorGUI extends JFrame
 		panelEditCloze.add(panelEditClozeLeft, gbc_panelEditClozeLeft);
 		
 		JPanel panelEditClozeRight = new JPanel();
+		panelEditClozeRight.setBackground(Color.WHITE);
 		GridBagConstraints gbc_panelEditClozeRight = new GridBagConstraints();
 		gbc_panelEditClozeRight.fill = GridBagConstraints.BOTH;
 		gbc_panelEditClozeRight.gridx = 2;
@@ -527,11 +532,47 @@ public class ClozeGeneratorGUI extends JFrame
 		panelEditCloze.add(panelEditClozeRight, gbc_panelEditClozeRight);
 		
 		JPanel panelEditClozeContent = new JPanel();
+		panelEditClozeContent.setBackground(Color.WHITE);
 		GridBagConstraints gbc_panelEditClozeContent = new GridBagConstraints();
 		gbc_panelEditClozeContent.fill = GridBagConstraints.BOTH;
 		gbc_panelEditClozeContent.gridx = 1;
 		gbc_panelEditClozeContent.gridy = 0;
 		panelEditCloze.add(panelEditClozeContent, gbc_panelEditClozeContent);
+		GridBagLayout gbl_panelEditClozeContent = new GridBagLayout();
+		gbl_panelEditClozeContent.columnWidths = new int[]{0, 0};
+		gbl_panelEditClozeContent.rowHeights = new int[]{0, 0, (int) CG_Button.dim.getHeight() * 2, 0};
+		gbl_panelEditClozeContent.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelEditClozeContent.rowWeights = new double[]{0.15, 1.0, 0, Double.MIN_VALUE};
+		panelEditClozeContent.setLayout(gbl_panelEditClozeContent);
+		
+		JScrollPane scrollEditProcessing = new JScrollPane();
+		GridBagConstraints gbc_scrollEditProcessing = new GridBagConstraints();
+		gbc_scrollEditProcessing.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollEditProcessing.fill = GridBagConstraints.BOTH;
+		gbc_scrollEditProcessing.gridx = 0;
+		gbc_scrollEditProcessing.gridy = 1;
+		panelEditClozeContent.add(scrollEditProcessing, gbc_scrollEditProcessing);
+		
+		panelEditProcessing = new JPanel();
+		panelEditProcessing.setBackground(Color.WHITE);
+		panelEditProcessing.setBackground(Color.WHITE);
+		panelEditProcessing.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
+		scrollEditProcessing.setViewportView(panelEditProcessing);
+		
+		JButton btnEditCloze = new CG_Button("Edit");
+		GridBagConstraints gbc_btnEditCloze = new GridBagConstraints();
+		gbc_btnEditCloze.gridx = 0;
+		gbc_btnEditCloze.gridy = 2;
+		panelEditClozeContent.add(btnEditCloze, gbc_btnEditCloze);
+		btnEditCloze.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				GenerateClozeQuestionsController gcq = new GenerateClozeQuestionsController(model, ClozeGeneratorGUI.this);
+				gcq.process(false);
+			}
+		});
 		
 		// END EDIT CLOZE
 		
@@ -761,7 +802,6 @@ public class ClozeGeneratorGUI extends JFrame
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
-		//this.setResizable(false);
 		this.setVisible(true);
 		
 		SwingUtilities.invokeLater(new Runnable() {

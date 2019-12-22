@@ -2,7 +2,7 @@ package com.jplanson.cloze.model;
 
 import java.util.Date;
 
-public class DbClozeQuestion 
+public class DbClozeQuestion implements Comparable<DbClozeQuestion>
 {
 	public Integer id;
 	public Integer clozeTextId;
@@ -16,5 +16,11 @@ public class DbClozeQuestion
 		this.clozeTextId = clozeTextId;
 		this.start = start;
 		this.end = end;
+	}
+
+	@Override
+	public int compareTo(DbClozeQuestion other) 
+	{
+		return this.id.compareTo(other.id);
 	}
 }

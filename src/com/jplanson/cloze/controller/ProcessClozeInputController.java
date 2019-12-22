@@ -41,7 +41,5 @@ public class ProcessClozeInputController
 		gui.panelProcessing.revalidate();
 		gui.panelProcessing.repaint();
 		gui.pack();
-		
-		
 	}
 }

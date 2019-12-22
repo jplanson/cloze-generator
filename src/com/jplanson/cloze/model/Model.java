@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class Model 
 {
 	public ClozeText createClozeText = null;
+	public ClozeText editClozeText = null;
 	
 	// Maps cloze text IDs to cloze text objects
 	public HashMap<Integer, ClozeText> masterClozeTexts = new HashMap<Integer, ClozeText>();

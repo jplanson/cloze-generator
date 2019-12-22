@@ -1,11 +1,13 @@
 package com.jplanson.cloze.controller;
 
+import java.awt.CardLayout;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jplanson.cloze.dao.DbClozeQuestionDAO;
 import com.jplanson.cloze.dao.ClozeTextDAO;
 import com.jplanson.cloze.model.ClozeComponent;
+import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.DbClozeQuestion;
 import com.jplanson.cloze.model.Model;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
@@ -21,9 +23,11 @@ public class GenerateClozeQuestionsController
 		this.gui = gui;
 	}
 	
-	public void process()
+	public void process(boolean create)
 	{
-		if (model.createClozeText == null)
+		ClozeText clozeText = create ? model.createClozeText : model.editClozeText;
+		
+		if (clozeText == null)
 		{
 			return;
 		}
@@ -32,9 +36,9 @@ public class GenerateClozeQuestionsController
 		
 		// Separate input into chunks based on state
 		int i = 0;
-		while (i < model.createClozeText.clozeComponents.size())
+		while (i < clozeText.clozeComponents.size())
 		{
-			ClozeComponent cc = model.createClozeText.clozeComponents.get(i);
+			ClozeComponent cc = clozeText.clozeComponents.get(i);
 			int ccState = cc.getValue();
 			
 			if (ccState == 0) { i++; continue; }
@@ -43,7 +47,7 @@ public class GenerateClozeQuestionsController
 			int end = -1;
 			
 			// Iterate until a component with a different state is found
-			while (i < model.createClozeText.clozeComponents.size() && ccState == model.createClozeText.clozeComponents.get(i).getValue())
+			while (i < clozeText.clozeComponents.size() && ccState == clozeText.clozeComponents.get(i).getValue())
 			{
 				i++;
 			}
@@ -54,11 +58,25 @@ public class GenerateClozeQuestionsController
 			dbClozeQuestions.add(dbClozeQuestion);
 		}
 		
+		if (dbClozeQuestions.size() == 0) { return; }
+		
+		
 		try 
 		{
-			int clozeTextId = new ClozeTextDAO().insertClozeText(model.createClozeText);
-			
 			DbClozeQuestionDAO dbClozeQuestionDAO = new DbClozeQuestionDAO();
+			Integer clozeTextId = null;
+			
+			// If we are editing, delete the previous cloze questions
+			if (!create)
+			{
+				dbClozeQuestionDAO.deleteByTextId(clozeText.id);
+				clozeTextId = clozeText.id;
+			}
+			else 
+			{
+				clozeTextId = new ClozeTextDAO().insertClozeText(clozeText);
+			}
+			
 			for (i = 0; i < dbClozeQuestions.size(); i++)
 			{
 				DbClozeQuestion dcq = dbClozeQuestions.get(i);
@@ -72,14 +90,27 @@ public class GenerateClozeQuestionsController
 			e.printStackTrace();
 		}
 		
-		// Clear form after a successful addition
-		gui.inputSampleText.setText("");
-		gui.inputTranslation.setText("");
-		gui.panelProcessing.removeAll();
-		gui.panelProcessing.revalidate();
-		gui.panelProcessing.repaint();
+		if (create)
+		{
+			// Clear form after a successful addition
+			gui.inputSampleText.setText("");
+			gui.inputTranslation.setText("");
+			gui.panelProcessing.removeAll();
+			gui.panelProcessing.revalidate();
+			gui.panelProcessing.repaint();
+			model.createClozeText = null;
+		}
+		else
+		{
+			gui.panelEditProcessing.removeAll();
+			gui.panelEditProcessing.revalidate();
+			gui.panelEditProcessing.repaint();
+			model.editClozeText = null;
+			CardLayout cl = (CardLayout) gui.panelContent.getLayout();
+			cl.show(gui.panelContent, "home");
+		}
+		
 		gui.pack();
-		model.createClozeText = null;
 		
 		// Refresh home page list
 		UpdateClozeQuestionListController ucsl = new UpdateClozeQuestionListController(model, gui);

@@ -11,6 +11,9 @@ public class ClozeComponent extends JLabel
 {
 	private static final long serialVersionUID = -8535067407590201236L;
 	
+	public static final Color color1 = new Color(0x0D3D56);
+	public static final Color color2 = new Color(0x912617);
+	
 	private static final Font font = new Font("MS Gothic", Font.PLAIN, 36);
 	private ModularInteger val;
 	
@@ -89,12 +92,12 @@ public class ClozeComponent extends JLabel
 			break;
 		case 1:
 			fg = Color.WHITE;
-			bg = new Color(0x0D3D56);
+			bg = color1;
 			break;
 			
 		case 2:
 			fg = Color.WHITE;
-			bg = new Color(0x912617);
+			bg = color2;
 			break;
 		}
 		
