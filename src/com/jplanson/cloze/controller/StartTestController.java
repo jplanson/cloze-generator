@@ -22,17 +22,16 @@ public class StartTestController
 	
 	public void process()
 	{
-		// Create ClozeQuestionInstances and randomize
+		// Create ClozeQuestionInstances
 		model.testState.testQuestions = getTestQuestions();
-		
-		// Randomize
-		Collections.shuffle(model.testState.testQuestions);
-		
 		if (model.testState.testQuestions.size() == 0)
 		{
 			model.testState.testQuestions = null;
 			return;
 		}
+		
+		// Randomize
+		Collections.shuffle(model.testState.testQuestions);
 		
 		// We have at least one question, so start
 		

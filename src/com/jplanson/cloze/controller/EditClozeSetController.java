@@ -8,6 +8,7 @@ import java.util.List;
 import com.jplanson.cloze.model.ClozeQuestion;
 import com.jplanson.cloze.model.DbClozeQuestion;
 import com.jplanson.cloze.model.Model;
+import com.jplanson.cloze.view.CG_ErrorMessage;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
 public class EditClozeSetController 
@@ -23,8 +24,11 @@ public class EditClozeSetController
 	
 	public void process(Integer listSelectedIndex)
 	{
-		// TODO: Print an error
-		if (listSelectedIndex == null || listSelectedIndex < 0) { return; }
+		if (listSelectedIndex == null || listSelectedIndex < 0) 
+		{ 
+			new CG_ErrorMessage("Please select an item from the list");
+			return; 
+		}
 		
 		gui.panelEditProcessing.removeAll();
 		
@@ -45,7 +49,6 @@ public class EditClozeSetController
 		{				
 			gui.panelEditProcessing.add(model.editClozeText.clozeComponents.get(i));
 		}
-		
 		
 		Collections.sort(dbClozeQuestions);
 		

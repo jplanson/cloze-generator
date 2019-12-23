@@ -10,6 +10,7 @@ import com.jplanson.cloze.model.DbClozeQuestion;
 import com.jplanson.cloze.model.ClozeQuestion;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
+import com.jplanson.cloze.view.CG_ErrorMessage;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
 public class UpdateClozeQuestionListController 
@@ -55,8 +56,7 @@ public class UpdateClozeQuestionListController
 		} 
 		catch (Exception e) 
 		{
-			// TODO: Handle this error properly
-			e.printStackTrace();
+			new CG_ErrorMessage("Error occurred while updating cloze question list: " + e.getMessage());
 		}
 	}
 }

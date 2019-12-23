@@ -23,6 +23,6 @@ public class ClozeQuestion
 	public String toString()
 	{
 		TestQuestion question = toTestQuestion();
-		return "ID: " + dbQuestion.id + "  |  " + question.answer + "  | " + question.translation + "  |  " + parent.id;
+		return "ID: " + dbQuestion.id + "  |  " + question.answer + "  | " + question.translation;
 	}
 }

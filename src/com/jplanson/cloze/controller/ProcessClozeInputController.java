@@ -2,6 +2,7 @@ package com.jplanson.cloze.controller;
 
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
+import com.jplanson.cloze.view.CG_ErrorMessage;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
 public class ProcessClozeInputController
@@ -23,7 +24,7 @@ public class ProcessClozeInputController
 		
 		if (sampleText.isEmpty() || translationText.isEmpty())
 		{
-			// TODO: Print some sort of error message
+			new CG_ErrorMessage("Sample text and translation cannot be empty.");
 			return;
 		}
 		

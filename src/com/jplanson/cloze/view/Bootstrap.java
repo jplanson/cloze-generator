@@ -13,13 +13,11 @@ public class Bootstrap
 		}
 		catch (Exception e)
 		{
-			// TODO: Display error message in a pane and close upon exit
-			System.out.println(e.getMessage());
+			new CG_ErrorMessage(e.getMessage());
 			System.exit(1);
 		}
 
 		// Display GUI
-		@SuppressWarnings("unused")
-		ClozeGeneratorGUI frame = new ClozeGeneratorGUI();
+		new ClozeGeneratorGUI();
 	}
 }

@@ -1,5 +1,6 @@
 package com.jplanson.cloze.dao;
 
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -111,6 +112,29 @@ public class DbClozeQuestionDAO
 		catch (SQLException se)
 		{
 			throw new Exception("Unable to delete cloze question: " + se.getMessage());
+		}
+	}
+
+	public List<DbClozeQuestion> getClozeQuestionsByTextId(Integer id) throws Exception
+	{
+		List<DbClozeQuestion> allClozeQuestions = new ArrayList<DbClozeQuestion>();
+		try
+		{
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM clozeQuestions WHERE clozeTextId = ?;");
+			ps.setInt(1, id);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				DbClozeQuestion clozeText = generateClozeQuestion(resultSet);
+				allClozeQuestions.add(clozeText);
+			}
+			
+			return allClozeQuestions;
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Failed to retrieve cloze questions: " + e.getMessage());
 		}
 	}
 }

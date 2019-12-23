@@ -10,6 +10,7 @@ import com.jplanson.cloze.model.ClozeComponent;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.DbClozeQuestion;
 import com.jplanson.cloze.model.Model;
+import com.jplanson.cloze.view.CG_ErrorMessage;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
 public class GenerateClozeQuestionsController 
@@ -86,8 +87,7 @@ public class GenerateClozeQuestionsController
 		} 
 		catch (Exception e) 
 		{
-			//TODO: Print error to screen
-			e.printStackTrace();
+			new CG_ErrorMessage("Error occurred while inserting cloze question: " + e.getMessage());
 		}
 		
 		if (create)

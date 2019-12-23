@@ -3,6 +3,7 @@ package com.jplanson.cloze.controller;
 import com.jplanson.cloze.dao.ClozeTextDAO;
 import com.jplanson.cloze.model.ClozeText;
 import com.jplanson.cloze.model.Model;
+import com.jplanson.cloze.view.CG_ErrorMessage;
 import com.jplanson.cloze.view.ClozeGeneratorGUI;
 
 public class DeleteClozeSetController 
@@ -21,9 +22,7 @@ public class DeleteClozeSetController
 		ClozeText clozeText = model.masterClozeQuestions.get(model.listIndexToClozeQuestionId.get(clozeQuestionIndex)).parent;
 		if (clozeText == null)
 		{
-			// TODO: Print error somewhere and return
-			System.out.println("Cloze text is Null!");
-			return;
+			new CG_ErrorMessage("Cloze text is null.");
 		}
 		
 		try 
@@ -32,7 +31,7 @@ public class DeleteClozeSetController
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			new CG_ErrorMessage("Error occurred while deleting cloze text: " + e.getMessage());
 		}
 		
 		UpdateClozeQuestionListController ucsl = new UpdateClozeQuestionListController(model, gui);
